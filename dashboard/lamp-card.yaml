@@ -1,0 +1,69 @@
+# Luke Roberts Lamp Control – Lovelace Dashboard Card
+#
+# Replace "lukeroberts_<your_mac>" with your actual entity IDs.
+# The MAC address is the lamp's BT MAC with colons removed and lowercased,
+# e.g. AA:BB:CC:DD:EE:FF → lukeroberts_aabbccddeeff
+#
+# To find your entity IDs: Settings → Devices & Services → MQTT → your device.
+
+type: vertical-stack
+cards:
+
+  # ── Main light control ──────────────────────────────────────────────────────
+  - type: light
+    entity: light.lukeroberts_aabbccddeeff
+    name: Luke Roberts Lamp
+
+  # ── Scene picker (effect dropdown) ──────────────────────────────────────────
+  - type: entities
+    title: Scenes
+    entities:
+      - entity: light.lukeroberts_aabbccddeeff
+        type: custom:light-entity-row   # optional – works without this card too
+        name: Scene
+        attribute: effect
+
+  # ── Quick-access scene buttons ───────────────────────────────────────────────
+  # Adjust the effect names to match your configured scene names.
+  - type: horizontal-stack
+    cards:
+      - type: button
+        name: "Default"
+        icon: mdi:restore
+        tap_action:
+          action: call-service
+          service: light.turn_on
+          service_data:
+            entity_id: light.lukeroberts_aabbccddeeff
+      - type: button
+        name: "Off"
+        icon: mdi:lamp-outline
+        tap_action:
+          action: call-service
+          service: light.turn_off
+          service_data:
+            entity_id: light.lukeroberts_aabbccddeeff
+
+  # ── Brightness & colour sliders ──────────────────────────────────────────────
+  - type: entities
+    title: Brightness & Colour Temperature
+    entities:
+      - type: custom:slider-entity-row   # requires lovelace-slider-entity-row
+        entity: light.lukeroberts_aabbccddeeff
+        attribute: brightness
+        name: Brightness
+        min: 0
+        max: 255
+      - type: custom:slider-entity-row
+        entity: light.lukeroberts_aabbccddeeff
+        attribute: color_temp
+        name: Colour Temp (mireds)
+        min: 250
+        max: 370
+
+  # ── Availability sensor ──────────────────────────────────────────────────────
+  - type: entities
+    title: Status
+    entities:
+      - entity: light.lukeroberts_aabbccddeeff
+        name: Lamp
